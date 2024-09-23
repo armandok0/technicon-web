@@ -30,6 +30,9 @@ public interface OwnerService {
     
     // Verify Owner
     Optional<String> verifyOwner(String username, String password) throws CustomException;
+    
+     // Authenticate Owner
+    Optional<Owner> authenticateOwner(String username, String password) throws CustomException ;
 
     // Validations
     void validateVat(String vat) throws CustomException;

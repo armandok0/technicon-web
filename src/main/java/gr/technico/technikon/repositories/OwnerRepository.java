@@ -2,20 +2,27 @@ package gr.technico.technikon.repositories;
 
 import gr.technico.technikon.jpa.JpaUtil;
 import gr.technico.technikon.model.Owner;
+import jakarta.ejb.Stateless;
+import jakarta.enterprise.context.RequestScoped;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
+import jakarta.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
-
-
 
 /**
  * Repository for managing Owners.
  *
  */
+@RequestScoped
 public class OwnerRepository implements Repository<Owner, Long> {
 
-    private final EntityManager entityManager;
+    @PersistenceContext(unitName = "Technikon")
+    private EntityManager entityManager;
+
+    public OwnerRepository() {
+    }
 
     /**
      * Constructs a new OwnerRepository with the the EntityManager
@@ -34,12 +41,13 @@ public class OwnerRepository implements Repository<Owner, Long> {
      * the save failed
      */
     @Override
+    @Transactional
     public Optional<Owner> save(Owner owner) {
         try {
             JpaUtil.beginTransaction();
-            entityManager.persist(owner);
+            Owner managedOwner = entityManager.merge(owner);
             JpaUtil.commitTransaction();
-            return Optional.of(owner);
+            return Optional.of(managedOwner);
         } catch (Exception e) {
             JpaUtil.rollbackTransaction();
             return Optional.empty();
@@ -109,6 +117,7 @@ public class OwnerRepository implements Repository<Owner, Long> {
      * @param vat
      * @return true if the Owner was deleted, false otherwise
      */
+    @Transactional
     public boolean deletePermanentlyByVat(String vat) {
         try {
             JpaUtil.beginTransaction();

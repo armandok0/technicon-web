@@ -1,8 +1,11 @@
 package gr.technico.technikon.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.EnumType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -17,7 +20,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-
 
 @Entity
 @Getter
@@ -64,23 +66,19 @@ public class Owner implements Serializable {
     @NotNull
     private boolean isDeleted = false;
 
+    @Enumerated(EnumType.STRING)
+    @NotNull
+    private Role role = Role.USER;
+    
+    public enum Role {
+        ADMIN, USER
+    }
+
+    @JsonIgnore
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Property> propertyList;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Repair> repairList;
-
-    @Override
-    public String toString() {
-        return "Owner {"
-                + "\n    ID = " + id
-                + "\n    VAT = " + vat
-                + "\n    Name = " + name
-                + "\n    Surname = " + surname
-                + "\n    Address = " + address
-                + "\n    Phone Number = " + phoneNumber
-                + "\n    Email = " + email
-                + "\n    Username = " + username
-                + "\n}";
-    }
 }

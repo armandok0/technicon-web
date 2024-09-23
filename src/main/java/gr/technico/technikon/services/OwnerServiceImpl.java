@@ -3,6 +3,8 @@ package gr.technico.technikon.services;
 import gr.technico.technikon.exceptions.CustomException;
 import gr.technico.technikon.model.Owner;
 import gr.technico.technikon.repositories.OwnerRepository;
+import jakarta.enterprise.context.RequestScoped;
+import jakarta.inject.Inject;
 
 import java.util.Optional;
 import java.util.regex.Pattern;
@@ -10,9 +12,14 @@ import java.util.regex.Pattern;
 /**
  * Service that manages owner functionalities.
  */
+@RequestScoped
 public class OwnerServiceImpl implements OwnerService {
 
-    private final OwnerRepository ownerRepository;
+    @Inject
+    private OwnerRepository ownerRepository;
+
+    public OwnerServiceImpl() {
+    }
 
     /**
      * Constructs a new OwnerService with the given OwnerRepository
@@ -135,8 +142,6 @@ public class OwnerServiceImpl implements OwnerService {
         save(owner);
     }
 
-   
-
     /**
      * Permanently deletes an owner by VAT
      *
@@ -188,6 +193,22 @@ public class OwnerServiceImpl implements OwnerService {
         Owner owner = ownerRepository.findByUsernameAndPassword(username, password)
                 .orElseThrow(() -> new CustomException("Invalid username or password."));
         return Optional.of(owner.getVat());
+    }
+
+    @Override
+    public Optional<Owner> authenticateOwner(String username, String password) throws CustomException {
+        if (username == null || username.isBlank()) {
+            throw new CustomException("Username cannot be null or blank.");
+        }
+        if (password == null || password.isBlank()) {
+            throw new CustomException("Password cannot be null or blank.");
+        }
+
+        Optional<Owner> owner = ownerRepository.findByUsernameAndPassword(username, password);
+        if (!owner.isPresent()) {
+            throw new CustomException("Invalid username or password.");
+        }
+        return owner;
     }
 
     /**
