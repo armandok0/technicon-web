@@ -5,14 +5,23 @@ import gr.technico.technikon.model.Owner;
 import gr.technico.technikon.model.Property;
 import gr.technico.technikon.model.PropertyType;
 import gr.technico.technikon.repositories.PropertyRepository;
+import jakarta.enterprise.context.RequestScoped;
+import jakarta.inject.Inject;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+@RequestScoped
 public class PropertyServiceImpl implements PropertyService {
 
-    private final OwnerService ownerServiceInterface;
-    private final PropertyRepository propertyRepository;
+    @Inject
+    private OwnerService ownerServiceInterface;
+
+    @Inject
+    private PropertyRepository propertyRepository;
+
+    public PropertyServiceImpl() {
+    }
 
     public PropertyServiceImpl(PropertyRepository propertyRepository, OwnerServiceImpl ownerService) {
         this.propertyRepository = propertyRepository;

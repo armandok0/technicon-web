@@ -2,15 +2,22 @@ package gr.technico.technikon.repositories;
 
 import gr.technico.technikon.jpa.JpaUtil;
 import gr.technico.technikon.model.Property;
+import jakarta.enterprise.context.RequestScoped;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
+import jakarta.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 
-
+@RequestScoped
 public class PropertyRepository implements Repository<Property, Long> {
 
-    private final EntityManager entityManager;
+    @PersistenceContext(unitName = "Technikon")
+    private EntityManager entityManager;
+
+    public PropertyRepository() {
+    }
 
     public PropertyRepository(EntityManager entityManager) {
         this.entityManager = entityManager;
@@ -37,10 +44,11 @@ public class PropertyRepository implements Repository<Property, Long> {
      * @throws Exception if an exception occurs during the save operation
      */
     @Override
+    @Transactional
     public Optional<Property> save(Property property) {
         try {
             JpaUtil.beginTransaction();
-            entityManager.persist(property);
+            entityManager.merge(property);
             JpaUtil.commitTransaction();
             return Optional.of(property);
         } catch (Exception e) {
@@ -95,6 +103,7 @@ public class PropertyRepository implements Repository<Property, Long> {
      * false otherwise
      */
     @Override
+    @Transactional
     public boolean deleteById(Long id) {
         Property property = entityManager.find(getEntityClass(), id);
         if (property != null) {
@@ -142,11 +151,10 @@ public class PropertyRepository implements Repository<Property, Long> {
      * VAT
      */
     public List<Property> findPropertyByVAT(String vat) {
-        TypedQuery<Property> query
-                = entityManager.createQuery("from " + getEntityClassName()
-                        + " where owner_vat = :vat ",
-                        getEntityClass())
-                        .setParameter("vat", vat);
+        TypedQuery<Property> query = entityManager.createQuery(
+                "FROM Property p WHERE p.owner.vat = :vat", Property.class)
+                .setParameter("vat", vat);
         return query.getResultList();
     }
+
 }

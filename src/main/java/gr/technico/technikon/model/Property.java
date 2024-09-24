@@ -1,5 +1,6 @@
 package gr.technico.technikon.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -20,8 +21,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-
 
 @Entity
 @Getter
@@ -56,7 +55,8 @@ public class Property implements Serializable {
     @ManyToOne
     @JoinColumn(name = "owner_vat", referencedColumnName = "vat", nullable = false)
     private Owner owner;
-
+    
+    @JsonIgnore
     @OneToMany(mappedBy = "property", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Repair> repairs;
 
