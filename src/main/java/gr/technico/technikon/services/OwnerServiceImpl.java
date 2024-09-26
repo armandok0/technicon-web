@@ -63,11 +63,20 @@ public class OwnerServiceImpl implements OwnerService {
         owner.setName(name);
         owner.setSurname(surname);
         owner.setPhoneNumber(phoneNumber);
-        owner.setUsername(username);
+        owner.setUsername((username == null || username.trim().isEmpty()) ? null : username);
         owner.setPassword(password);
         owner.setEmail(email);
 
         save(owner);
+
+        verifyOwnerSaved(vat);
+    }
+
+    private void verifyOwnerSaved(String vat) throws CustomException {
+        Optional<Owner> savedOwner = ownerRepository.findByVat(vat);
+        if (!savedOwner.isPresent()) {
+            throw new CustomException("Failed to save the owner in the database.");
+        }
     }
 
     /**
@@ -75,7 +84,7 @@ public class OwnerServiceImpl implements OwnerService {
      *
      * @param vat
      * @return an Optional containing the found Owner, or an empty Optional if
-     * no Owner was found
+     * no Owner was foundW
      */
     @Override
     public Optional<Owner> searchOwnerByVat(String vat) {
@@ -196,18 +205,23 @@ public class OwnerServiceImpl implements OwnerService {
     }
 
     @Override
-    public Optional<Owner> authenticateOwner(String username, String password) throws CustomException {
-        if (username == null || username.isBlank()) {
-            throw new CustomException("Username cannot be null or blank.");
+    public Optional<Owner> authenticateOwner(String email, String password) throws CustomException {
+        if (email == null || email.isBlank()) {
+            throw new CustomException("Email cannot be null or blank.");
         }
         if (password == null || password.isBlank()) {
             throw new CustomException("Password cannot be null or blank.");
         }
 
-        Optional<Owner> owner = ownerRepository.findByUsernameAndPassword(username, password);
+        Optional<Owner> owner = ownerRepository.findByEmailAndPassword(email, password);
         if (!owner.isPresent()) {
-            throw new CustomException("Invalid username or password.");
+            throw new CustomException("Invalid email or password.");
         }
+
+        if (owner.get().isDeleted()) {
+            throw new CustomException("This account has been deactivated. Please contact support!.");
+        }
+
         return owner;
     }
 

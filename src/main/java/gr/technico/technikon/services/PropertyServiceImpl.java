@@ -108,10 +108,11 @@ public class PropertyServiceImpl implements PropertyService {
      */
     @Override
     public Property updatePropertyAddress(Property property, String address) throws CustomException {
-        property.setPropertyAddress(address);
         if (property.isDeleted()) {
             throw new CustomException("Cannot update a deleted property.");
         }
+
+        property.setPropertyAddress(address);
 
         try {
             Optional<Property> savedProperty = propertyRepository.save(property);

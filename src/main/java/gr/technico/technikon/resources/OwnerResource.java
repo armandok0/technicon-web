@@ -158,4 +158,24 @@ public class OwnerResource {
             return Response.status(Response.Status.BAD_REQUEST).entity("Failed to delete owner").build();
         }
     }
+
+    @POST
+    @Path("/authenticate")
+    public Response authenticateOwner(@QueryParam("email") String email, @QueryParam("password") String password) {
+        log.debug("Authenticating owner with email: {}", email);
+        try {
+            return ownerService.authenticateOwner(email, password)
+                    .map(owner -> {
+                        log.info("Authentication successful for email: {}", email);
+                        return Response.ok(owner).build();
+                    })
+                    .orElseGet(() -> {
+                        log.warn("Authentication failed for email: {}", email);
+                        return Response.status(Response.Status.UNAUTHORIZED).entity("Invalid credentials").build();
+                    });
+        } catch (CustomException e) {
+            log.error("Authentication error for email: {}, {}", email, e.getMessage(), e);
+            return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
+        }
+    }
 }

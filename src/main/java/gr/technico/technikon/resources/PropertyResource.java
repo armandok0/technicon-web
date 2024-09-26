@@ -90,6 +90,8 @@ public class PropertyResource {
 
     @PUT
     @Path("/updateE9")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.TEXT_PLAIN)
     public Response updatePropertyE9(@QueryParam("e9") String e9, Map<String, String> jsonMap) {
         log.debug("Received request to update E9 for property with current E9: {}", e9);
         try {
@@ -161,6 +163,8 @@ public class PropertyResource {
 
     @PUT
     @Path("/softDelete")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.TEXT_PLAIN)
     public Response softDeleteProperty(@QueryParam("id") Long id) {
         log.debug("Soft deleting property with ID: {}", id);
         try {

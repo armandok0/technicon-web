@@ -111,6 +111,16 @@ public class OwnerRepository implements Repository<Owner, Long> {
         return query.getResultStream().findFirst();
     }
 
+    public Optional<Owner> findByEmailAndPassword(String email, String password) {
+        TypedQuery<Owner> query = entityManager.createQuery(
+                "FROM Owner WHERE email = :email AND password = :password AND isDeleted = false",
+                Owner.class
+        );
+        query.setParameter("email", email);
+        query.setParameter("password", password);
+        return query.getResultStream().findFirst();
+    }
+
     /**
      * Permanently deletes an Owner by VAT.
      *
