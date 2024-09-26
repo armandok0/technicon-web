@@ -6,14 +6,14 @@ import gr.technico.technikon.model.Property;
 import gr.technico.technikon.model.Repair;
 import gr.technico.technikon.model.RepairType;
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
 public interface RepairService {
 
     Repair createRepair(RepairType repairType, String shortDescription,
-            String description, Owner owner, Property property)throws CustomException;
+            String description, Property property) throws CustomException;
 
     void updateRepairType(Long id, RepairType repairType);
 
@@ -21,13 +21,13 @@ public interface RepairService {
 
     void updDesc(Long id, String description);
 
-    void updCostDates(Long id, BigDecimal proposedCost, LocalDateTime proposedStartDate, LocalDateTime proposedEndDateTime);
+    void updCostDates(Long id, BigDecimal proposedCost, Date proposedStartDate, Date proposedEndDateTime);
 
     void updAcceptance(Long id, int response) throws Exception;
 
-    void updComplete(Long id);
+    void updComplete(Long id) throws CustomException;
 
-    void updateStatus(Long id);
+    void updateStatus(Long id) throws CustomException;
 
     Long saveRepair(Repair repair) throws CustomException;
 
@@ -41,7 +41,7 @@ public interface RepairService {
 
     List<Repair> findRepairsByOwner(Owner owner) throws CustomException;
 
-    public List<Repair> getRepairByPropertyId(Property property)throws CustomException;
+    public List<Repair> getRepairByPropertyId(Property property) throws CustomException;
 
     public List<Repair> getAcceptedRepairs() throws CustomException;
 
@@ -52,7 +52,7 @@ public interface RepairService {
     boolean deletePermantlyById(Long id);
 
     boolean deleteSafely(Long id);
-    
+
     Optional<Repair> findRepairById(Long id);
 
     void validateType(int repairType) throws CustomException;

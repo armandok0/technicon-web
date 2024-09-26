@@ -69,7 +69,7 @@ public class Owner implements Serializable {
     @Enumerated(EnumType.STRING)
     @NotNull
     private Role role = Role.USER;
-    
+
     public enum Role {
         ADMIN, USER
     }
@@ -77,8 +77,4 @@ public class Owner implements Serializable {
     @JsonIgnore
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Property> propertyList;
-
-    @JsonIgnore
-    @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Repair> repairList;
 }

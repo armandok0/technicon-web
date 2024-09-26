@@ -55,13 +55,13 @@ public class Property implements Serializable {
     @ManyToOne
     @JoinColumn(name = "owner_vat", referencedColumnName = "vat", nullable = false)
     private Owner owner;
-    
+
     @JsonIgnore
     @OneToMany(mappedBy = "property", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Repair> repairs;
 
     @Override
     public String toString() {
-        return "Property{" + "id=" + id + ", e9=" + e9 + ", propertyAddress=" + propertyAddress + ", constructionYear=" + constructionYear + ", propertyType=" + propertyType + ", owner=" + owner.getVat() + ", isDeleted=" + isDeleted + '}';
+        return "Property{" + "id=" + id + ", e9=" + e9 + ", propertyAddress=" + propertyAddress + ", constructionYear=" + constructionYear + ", propertyType=" + propertyType + ", owner=" + (owner != null ? owner.getVat() : "null") + ", isDeleted=" + isDeleted + '}';
     }
 }

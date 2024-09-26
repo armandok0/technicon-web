@@ -8,6 +8,8 @@ import gr.technico.technikon.model.RepairStatus;
 import gr.technico.technikon.model.RepairType;
 import gr.technico.technikon.repositories.PropertyRepository;
 import gr.technico.technikon.repositories.RepairRepository;
+import jakarta.enterprise.context.RequestScoped;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -15,19 +17,29 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+@RequestScoped
 public class RepairServiceImpl implements RepairService {
 
-    private final RepairRepository repairRepository;
-    private final OwnerService ownerServiceInterface;
-    private final PropertyRepository propertyRepository;
+    @Inject
+    private RepairRepository repairRepository;
+
+    @Inject
+    private OwnerService ownerServiceInterface;
+
+    @Inject
+    private PropertyRepository propertyRepository;
+
+    public RepairServiceImpl() {
+    }
 
     public RepairServiceImpl(RepairRepository repairRepository, PropertyRepository propertyRepository, OwnerServiceImpl ownerService) {
         this.repairRepository = repairRepository;
-                this.propertyRepository = propertyRepository;
+        this.propertyRepository = propertyRepository;
         this.ownerServiceInterface = ownerService;
     }
 
@@ -45,11 +57,7 @@ public class RepairServiceImpl implements RepairService {
      */
     @Override
     public Repair createRepair(RepairType repairType, String shortDescription,
-            String description, Owner owner, Property property) throws CustomException{
-        
-        if (owner == null) {
-            throw new CustomException("Owner id not inserted.");
-        }
+            String description, Property property) throws CustomException {
         if (property == null) {
             throw new CustomException("Property id not inserted.");
         }
@@ -60,9 +68,8 @@ public class RepairServiceImpl implements RepairService {
         repair.setRepairType(repairType);
         repair.setShortDescription(shortDescription);
         repair.setDescription(description);
-        repair.setSubmissionDate(LocalDateTime.now());
+        repair.setSubmissionDate(new Date());
         repair.setRepairStatus(RepairStatus.PENDING);
-        repair.setOwner(owner);
         repair.setProperty(property);
         repairRepository.save(repair);
         return repair;
@@ -127,7 +134,7 @@ public class RepairServiceImpl implements RepairService {
      * @param proposedEndDateTime
      */
     @Override
-    public void updCostDates(Long id, BigDecimal proposedCost, LocalDateTime proposedStartDate, LocalDateTime proposedEndDateTime) {
+    public void updCostDates(Long id, BigDecimal proposedCost, Date proposedStartDate, Date proposedEndDateTime) {
         Optional<Repair> repair = repairRepository.findById(id);
         Repair repairFound = repair.get();
         if (proposedCost != null) {
@@ -166,14 +173,23 @@ public class RepairServiceImpl implements RepairService {
      * @param id
      */
     @Override
-    public void updateStatus(Long id) {
-        Optional<Repair> repair = repairRepository.findById(id);
-        Repair repairFound = repair.get();
-
-        repairFound.setRepairStatus(RepairStatus.INPROGRESS);
-        repairFound.setActualStartDate(LocalDateTime.now());
-
-        repairRepository.save(repairFound);
+    public void updateStatus(Long id) throws CustomException {
+        Optional<Repair> repairOpt = repairRepository.findById(id);
+        if (repairOpt.isEmpty()) {
+            throw new CustomException("Repair not found for ID: " + id);
+        }
+        Repair repair = repairOpt.get();
+        if (repair.getProperty() == null) {
+            throw new CustomException("Property is missing for repair ID: " + id);
+        }
+        repair.setRepairStatus(RepairStatus.INPROGRESS);
+        Date now = new Date();
+        repair.setActualStartDate(now);
+        try {
+            repairRepository.save(repair);
+        } catch (Exception e) {
+            throw new CustomException("Error saving the repair for ID: " + id + ". Possible cause: " + e.getMessage());
+        }
     }
 
     /**
@@ -183,12 +199,23 @@ public class RepairServiceImpl implements RepairService {
      * @param id
      */
     @Override
-    public void updComplete(Long id) {
-        Optional<Repair> repair = repairRepository.findById(id);
-        Repair repairFound = repair.get();
-        repairFound.setActualEndDate(LocalDateTime.now());
+    public void updComplete(Long id) throws CustomException {
+        Optional<Repair> repairOpt = repairRepository.findById(id);
+        if (repairOpt.isEmpty()) {
+            throw new CustomException("Repair not found for ID: " + id);
+        }
+        Repair repairFound = repairOpt.get();
+        if (repairFound.getProperty() == null) {
+            throw new CustomException("Property is missing for repair ID: " + id);
+        }
+        Date now = new Date();
+        repairFound.setActualEndDate(now);
         repairFound.setRepairStatus(RepairStatus.COMPLETE);
-        repairRepository.save(repairFound);
+        try {
+            repairRepository.save(repairFound);
+        } catch (Exception e) {
+            throw new CustomException("Error saving the repair for ID: " + id + ". Possible cause: " + e.getMessage());
+        }
     }
 
     /**
@@ -210,7 +237,7 @@ public class RepairServiceImpl implements RepairService {
      * @return A list of all Repair instances.
      */
     @Override
-    public List<Repair> getRepairs() throws CustomException{
+    public List<Repair> getRepairs() throws CustomException {
         List<Repair> repairs = repairRepository.findAll();
         if (repairs.isEmpty()) {
             throw new CustomException("Repairs not found");
@@ -244,14 +271,12 @@ public class RepairServiceImpl implements RepairService {
      */
     @Override
     public List<Repair> getPendingRepairsByOwner(Owner owner) throws CustomException {
-        List<Repair> repairs = repairRepository.findPendingRepairsByOwner(owner).stream()
-                .filter(repair -> !repair.isDeleted())
-                .collect(Collectors.toList());
+        List<Repair> repairs = repairRepository.findPendingRepairsByOwner(owner);
         if (repairs.isEmpty()) {
+            System.out.println("No pending repairs found for owner: " + owner.getVat());
             throw new CustomException("Repairs not found");
-        } else {
-            return repairs;
         }
+        return repairs;
     }
 
     /**
@@ -267,7 +292,7 @@ public class RepairServiceImpl implements RepairService {
         } else {
             return repairs;
         }
-        
+
     }
 
     /**
@@ -292,7 +317,7 @@ public class RepairServiceImpl implements RepairService {
      * @return A list of all Repair instances associated with the given owner.
      */
     @Override
-    public List<Repair> findRepairsByOwner(Owner owner) throws CustomException{
+    public List<Repair> findRepairsByOwner(Owner owner) throws CustomException {
         List<Repair> repairs = repairRepository.findRepairsByOwner(owner).stream()
                 .filter(property -> !property.isDeleted())
                 .collect(Collectors.toList());
@@ -411,7 +436,7 @@ public class RepairServiceImpl implements RepairService {
      * property.
      */
     @Override
-    public List<Repair> getRepairByPropertyId(Property property) throws CustomException{
+    public List<Repair> getRepairByPropertyId(Property property) throws CustomException {
         List<Repair> repairs = repairRepository.findRepairsByPropertyId(property).stream()
                 .filter(repair -> !repair.isDeleted())
                 .collect(Collectors.toList());
@@ -489,17 +514,17 @@ public class RepairServiceImpl implements RepairService {
                 throw new CustomException("Invalid input.");
         }
     }
-     public void validateRepairType(RepairType repairType) throws CustomException {
-        
-         if (repairType != RepairType.valueOf("PAINTING") 
-                 && repairType != RepairType.valueOf("INSULATION") 
-                 && repairType != RepairType.valueOf("FRAMES") 
-                 && repairType != RepairType.valueOf("PLUMBING") 
-                 && repairType != RepairType.valueOf("ELECTRICALWORK") ){
+
+    public void validateRepairType(RepairType repairType) throws CustomException {
+
+        if (repairType != RepairType.valueOf("PAINTING")
+                && repairType != RepairType.valueOf("INSULATION")
+                && repairType != RepairType.valueOf("FRAMES")
+                && repairType != RepairType.valueOf("PLUMBING")
+                && repairType != RepairType.valueOf("ELECTRICALWORK")) {
             throw new CustomException("Invalid input.");
         }
-            
-            
+
     }
 
 }
