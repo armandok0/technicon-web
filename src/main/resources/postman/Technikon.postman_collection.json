@@ -1,0 +1,1065 @@
+{
+	"info": {
+		"_postman_id": "c5c93203-e082-464c-afa4-50e5fdc72bff",
+		"name": "Technikon",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "32896641"
+	},
+	"item": [
+		{
+			"name": "Owner",
+			"item": [
+				{
+					"name": "Create Owner",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"vat\": \"111111111\",\n  \"name\": \"Armando\",\n  \"surname\": \"Kostas\",\n  \"address\": \"Zeas 50\",\n  \"phoneNumber\": \"6996884514\",\n  \"email\": \"armandok163@gmail.com\",\n  \"username\": \"armandok0\",\n  \"password\": \"armandok\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/technikon/resources/owners/create",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"technikon",
+								"resources",
+								"owners",
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Search Owner By Vat",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/technikon/resources/owners/111111111",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"technikon",
+								"resources",
+								"owners",
+								"111111111"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Search Owner By Email",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/technikon/resources/owners/email/armandok163@gmail.com",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"technikon",
+								"resources",
+								"owners",
+								"email",
+								"armandok163@gmail.com"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Owner Address",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"address\": \"Zeas 60\"\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/technikon/resources/owners/111111111/address",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"technikon",
+								"resources",
+								"owners",
+								"111111111",
+								"address"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Owner Email",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"armandok1663@gmail.com\"\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/technikon/resources/owners/111111111/email",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"technikon",
+								"resources",
+								"owners",
+								"111111111",
+								"email"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Owner Password",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"password\": \"armandokk\"\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/technikon/resources/owners/111111111/password",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"technikon",
+								"resources",
+								"owners",
+								"111111111",
+								"password"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Owner Softly",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/technikon/resources/owners/111111111",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"technikon",
+								"resources",
+								"owners",
+								"111111111"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Owner Permanantly",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/technikon/resources/owners/111111111",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"technikon",
+								"resources",
+								"owners",
+								"111111111"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Verify Owner",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"katerina.michailidou@example.com\",\n    \"password\": \"katerina\"\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/technikon/resources/owners/authenticate",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"technikon",
+								"resources",
+								"owners",
+								"authenticate"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Property",
+			"item": [
+				{
+					"name": "Create Property",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "file",
+							"file": {}
+						},
+						"url": {
+							"raw": "http://localhost:8080/technikon/resources/properties/create",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"technikon",
+								"resources",
+								"properties",
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Search Property by E9",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/technikon/resources/properties/09876543210987654321",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"technikon",
+								"resources",
+								"properties",
+								"09876543210987654321"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Search Property by Vat",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/technikon/resources/properties/vat/123456780",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"technikon",
+								"resources",
+								"properties",
+								"vat",
+								"123456780"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Property E9",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"newE9\": \"09876543210987654321\"\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/technikon/resources/properties/09876543210987654321/e9",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"technikon",
+								"resources",
+								"properties",
+								"09876543210987654321",
+								"e9"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Property Address",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"address\": \"Zeas 60\"\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/technikon/resources/properties/09876543210987654321/address",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"technikon",
+								"resources",
+								"properties",
+								"09876543210987654321",
+								"address"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Propery Contruction Year",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"year\": 2001\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/technikon/resources/properties/09876543210987654321/PropertyConstructionYear",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"technikon",
+								"resources",
+								"properties",
+								"09876543210987654321",
+								"PropertyConstructionYear"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Property Type",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"propertyType\": \"APARTMENTBUILDING\"\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/technikon/resources/properties/09876543210987654321/PropertyType",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"technikon",
+								"resources",
+								"properties",
+								"09876543210987654321",
+								"PropertyType"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Property Softly",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/technikon/resources/properties/2",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"technikon",
+								"resources",
+								"properties",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Property Permanantly",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/technikon/resources/properties/3",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"technikon",
+								"resources",
+								"properties",
+								"3"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Repairs",
+			"item": [
+				{
+					"name": "Create Repairs",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"repairType\": \"PAINTING\",\n    \"shortDescription\": \"Repaint foyer\",\n    \"description\": \"The paint in the foyer is peeling and needs to be completely redone.\",\n    \"property\": { \"id\": 1,\n        \"e9\": \"PROP0000000000000001\",\n        \"propertyAddress\": \"123 Athinon Street Athens\",\n        \"constructionYear\": 2004,\n        \"propertyType\": \"DETACHEDHOUSE\",\n        \"owner\": {\n            \"id\": 1,\n            \"vat\": \"123456780\",\n            \"name\": \"Dimitris\",\n            \"surname\": \"Papadimitriou\",\n            \"address\": \"12 Egnatia Street Arta 47100\",\n            \"phoneNumber\": \"6900000000\",\n            \"email\": \"dimitris.papadimitriou@example.com\",\n            \"username\": \"dimitrispp\",\n            \"password\": \"dimitris\",\n            \"role\": \"USER\",\n            \"deleted\": false\n        },\n    \"deleted\": false\n    }\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/technikon/resources/repairs/create",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"technikon",
+								"resources",
+								"repairs",
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Repair Type",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"repairType\": \"INSULATION\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/technikon/resources/repairs/5/repairType",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"technikon",
+								"resources",
+								"repairs",
+								"5",
+								"repairType"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Short Description",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"shortDescription\": \"updatedShortDesc\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/technikon/resources/repairs/5/shortDescription",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"technikon",
+								"resources",
+								"repairs",
+								"5",
+								"shortDescription"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Description",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"description\": \"updatedDesc\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/technikon/resources/repairs/5/description",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"technikon",
+								"resources",
+								"repairs",
+								"5",
+								"description"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Costs and Dates",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"proposedCost\": \"5000.50\",\n  \"proposedStartDate\": 1735689600000, \n  \"proposedEndDate\": 1738281600000  \n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/technikon/resources/repairs/5/costAndDates",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"technikon",
+								"resources",
+								"repairs",
+								"5",
+								"costAndDates"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Acceptance Status;",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"response\": 1\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/technikon/resources/repairs/5/acceptanceStatus",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"technikon",
+								"resources",
+								"repairs",
+								"5",
+								"acceptanceStatus"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Status to inProgress",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/technikon/resources/repairs/5/statusInprogress",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"technikon",
+								"resources",
+								"repairs",
+								"5",
+								"statusInprogress"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Status to Complete",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/technikon/resources/repairs/5/statusComplete",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"technikon",
+								"resources",
+								"repairs",
+								"5",
+								"statusComplete"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Repairs",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/technikon/resources/repairs/all",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"technikon",
+								"resources",
+								"repairs",
+								"all"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Pending Repairs",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/technikon/resources/repairs/pending",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"technikon",
+								"resources",
+								"repairs",
+								"pending"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Pending Repairs By Owner",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/technikon/resources/repairs/pending/owner/123456780",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"technikon",
+								"resources",
+								"repairs",
+								"pending",
+								"owner",
+								"123456780"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get InProgress Repairs",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/technikon/resources/repairs/inProgress",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"technikon",
+								"resources",
+								"repairs",
+								"inProgress"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Accepted Repairs",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/technikon/resources/repairs/accepted",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"technikon",
+								"resources",
+								"repairs",
+								"accepted"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Repairs by Owner",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/technikon/resources/repairs/owner/123456780",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"technikon",
+								"resources",
+								"repairs",
+								"owner",
+								"123456780"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Repairs by Date for an Owner",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/technikon/resources/repairs?date=2024-09-25&vat=123456780",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"technikon",
+								"resources",
+								"repairs"
+							],
+							"query": [
+								{
+									"key": "date",
+									"value": "2024-09-25"
+								},
+								{
+									"key": "vat",
+									"value": "123456780"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Repairs By Range of Dates for an Owner",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/technikon/resources/repairs/datesRange?startDate=2025-01-01&endDate=2025-09-25&vat=123456780",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"technikon",
+								"resources",
+								"repairs",
+								"datesRange"
+							],
+							"query": [
+								{
+									"key": "startDate",
+									"value": "2025-01-01"
+								},
+								{
+									"key": "endDate",
+									"value": "2025-09-25"
+								},
+								{
+									"key": "vat",
+									"value": "123456780"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Repairs By Id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/technikon/resources/repairs/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"technikon",
+								"resources",
+								"repairs",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Repair Safely",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/technikon/resources/repairs/6",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"technikon",
+								"resources",
+								"repairs",
+								"6"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Repair Permanantly",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/technikon/resources/repairs/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"technikon",
+								"resources",
+								"repairs",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Repair by Property Id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/technikon/resources/repairs/property/5",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"technikon",
+								"resources",
+								"repairs",
+								"property",
+								"5"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
