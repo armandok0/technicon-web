@@ -23,6 +23,7 @@ public class OwnerResource {
     private OwnerService ownerService;
 
     @POST
+    @Path("/create")
     public Response createOwner(Owner owner) {
         try {
             ownerService.createOwner(
@@ -44,8 +45,8 @@ public class OwnerResource {
     }
 
     @GET
-    @Path("/searchByVat")
-    public Response searchOwnerByVat(@QueryParam("vat") String vat) {
+    @Path("/{vat}")
+    public Response searchOwnerByVat(@PathParam("vat") String vat) {
         log.debug("Searching for owner with VAT: {}", vat);
         Optional<Owner> owner = ownerService.searchOwnerByVat(vat);
         if (owner.isPresent()) {
@@ -58,8 +59,8 @@ public class OwnerResource {
     }
 
     @GET
-    @Path("/searchByEmail")
-    public Response searchOwnerByEmail(@QueryParam("email") String email) {
+    @Path("/email/{email}")
+    public Response searchOwnerByEmail(@PathParam("email") String email) {
         log.debug("Searching for owner with email: {}", email);
         Optional<Owner> owner = ownerService.searchOwnerByEmail(email);
         if (owner.isPresent()) {
@@ -72,10 +73,10 @@ public class OwnerResource {
     }
 
     @PUT
-    @Path("/updateAddress")
+    @Path("/{vat}/address")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.TEXT_PLAIN)
-    public Response updateOwnerAddress(@QueryParam("vat") String vat, Map<String, String> jsonMap) {
+    public Response updateOwnerAddress(@PathParam("vat") String vat, Map<String, String> jsonMap) {
         log.debug("Updating address for owner with VAT: {}", vat);
         try {
             String address = jsonMap.get("address");
@@ -92,10 +93,10 @@ public class OwnerResource {
     }
 
     @PUT
-    @Path("/updateEmail")
+    @Path("/{vat}/email")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.TEXT_PLAIN)
-    public Response updateOwnerEmail(@QueryParam("vat") String vat, Map<String, String> jsonMap) {
+    public Response updateOwnerEmail(@PathParam("vat") String vat, Map<String, String> jsonMap) {
         log.debug("Updating email for owner with VAT: {}", vat);
         try {
             String email = jsonMap.get("email");
@@ -112,10 +113,10 @@ public class OwnerResource {
     }
 
     @PUT
-    @Path("/updatePassword")
+    @Path("/{vat}/password")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.TEXT_PLAIN)
-    public Response updateOwnerPassword(@QueryParam("vat") String vat, Map<String, String> jsonMap) {
+    public Response updateOwnerPassword(@PathParam("vat") String vat, Map<String, String> jsonMap) {
         log.debug("Updating password for owner with VAT: {}", vat);
         try {
             String password = jsonMap.get("password");
@@ -132,8 +133,8 @@ public class OwnerResource {
     }
 
     @DELETE
-    @Path("/hardDelete")
-    public Response deleteOwnerPermanently(@QueryParam("vat") String vat) {
+    @Path("/{vat}")
+    public Response deleteOwnerPermanently(@PathParam("vat") String vat) {
         log.debug("Deleting owner with VAT: {}", vat);
         boolean deleted = ownerService.deleteOwnerPermanently(vat);
         if (deleted) {
@@ -146,8 +147,8 @@ public class OwnerResource {
     }
 
     @PUT
-    @Path("/softDelete")
-    public Response deleteOwnerSafely(@QueryParam("vat") String vat) {
+    @Path("/{vat}")
+    public Response deleteOwnerSafely(@PathParam("vat") String vat) {
         log.debug("Soft deleting owner with VAT: {}", vat);
         boolean deleted = ownerService.deleteOwnerSafely(vat);
         if (deleted) {
@@ -161,8 +162,16 @@ public class OwnerResource {
 
     @POST
     @Path("/authenticate")
-    public Response authenticateOwner(@QueryParam("email") String email, @QueryParam("password") String password) {
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response authenticateOwner(Map<String, String> jsonMap) {
+        String email = jsonMap.get("email");
+        String password = jsonMap.get("password");
+
         log.debug("Authenticating owner with email: {}", email);
+        if (email == null || password == null || email.isEmpty() || password.isEmpty()) {
+            return Response.status(Response.Status.BAD_REQUEST).entity("Email or password is missing").build();
+        }
+
         try {
             return ownerService.authenticateOwner(email, password)
                     .map(owner -> {
@@ -178,4 +187,5 @@ public class OwnerResource {
             return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
         }
     }
+
 }

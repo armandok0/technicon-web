@@ -25,6 +25,7 @@ public class PropertyResource {
     private PropertyService propertyService;
 
     @POST
+    @Path("/create")
     public Response createProperty(Map<String, Object> jsonMap) {
         try {
             String e9 = (String) jsonMap.get("e9");
@@ -43,8 +44,9 @@ public class PropertyResource {
     }
 
     @GET
-    @Path("/searchByE9")
-    public Response searchPropertyByE9(@QueryParam("e9") String e9) {
+    @Path("/{e9}")
+    @Produces(MediaType.TEXT_PLAIN)
+    public Response searchPropertyByE9(@PathParam("e9") String e9) {
         log.debug("Searching for property with E9: {}", e9);
         try {
             Property property = propertyService.findByE9(e9);
@@ -57,8 +59,9 @@ public class PropertyResource {
     }
 
     @GET
-    @Path("/searchByVAT")
-    public Response searchPropertyByVAT(@QueryParam("vat") String vat) {
+    @Path("/vat/{vat}")
+    @Produces(MediaType.TEXT_PLAIN)
+    public Response searchPropertyByVAT(@PathParam("vat") String vat) {
         log.debug("Searching for properties with VAT: {}", vat);
         try {
             List<Property> properties = propertyService.findByVAT(vat);
@@ -71,15 +74,15 @@ public class PropertyResource {
     }
 
     @PUT
-    @Path("/updateAddress")
+    @Path("/{e9}/address")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.TEXT_PLAIN)
-    public Response updatePropertyAddress(@QueryParam("e9") String e9, Map<String, String> jsonMap) {
+    public Response updatePropertyAddress(@PathParam("e9") String e9, Map<String, String> jsonMap) {
         log.debug("Updating address for property with E9: {}", e9);
         try {
             String address = jsonMap.get("address");
             Property property = propertyService.findByE9(e9);
-            Property updatedProperty = propertyService.updatePropertyAddress(property, address);
+            propertyService.updatePropertyAddress(property, address);
             log.info("Property address updated successfully for E9: {}", e9);
             return Response.ok("Property address updated successfully").build();
         } catch (CustomException e) {
@@ -89,17 +92,17 @@ public class PropertyResource {
     }
 
     @PUT
-    @Path("/updateE9")
+    @Path("/{e9}/e9")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.TEXT_PLAIN)
-    public Response updatePropertyE9(@QueryParam("e9") String e9, Map<String, String> jsonMap) {
+    public Response updatePropertyE9(@PathParam("e9") String e9, Map<String, String> jsonMap) {
         log.debug("Received request to update E9 for property with current E9: {}", e9);
         try {
             String newE9 = jsonMap.get("newE9");
             Property property = propertyService.findByE9(e9);
             Property updatedProperty = propertyService.updatePropertyE9(property, newE9);
             log.debug("Successfully updated property with new E9: {}", updatedProperty.getE9());
-            return Response.ok(updatedProperty).build();
+            return Response.ok("Property e9 updated successfully").build();
 
         } catch (CustomException e) {
             log.error("Failed to update E9 for property with current E9 {}: {}", e9, e.getMessage(), e);
@@ -108,10 +111,10 @@ public class PropertyResource {
     }
 
     @PUT
-    @Path("/updateConstructionYear")
+    @Path("/{e9}/PropertyConstructionYear")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.TEXT_PLAIN)
-    public Response updatePropertyConstructionYear(@QueryParam("e9") String e9, Map<String, Integer> jsonMap) {
+    public Response updatePropertyConstructionYear(@PathParam("e9") String e9, Map<String, Integer> jsonMap) {
         log.debug("Updating construction year for property with E9: {}", e9);
         try {
             int year = jsonMap.get("year");
@@ -126,10 +129,10 @@ public class PropertyResource {
     }
 
     @PUT
-    @Path("/updateType")
+    @Path("/{e9}/PropertyType")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.TEXT_PLAIN)
-    public Response updatePropertyType(@QueryParam("e9") String e9, Map<String, String> jsonMap) {
+    public Response updatePropertyType(@PathParam("e9") String e9, Map<String, String> jsonMap) {
         log.debug("Updating property type for property with E9: {}", e9);
         try {
             PropertyType propertyType = PropertyType.valueOf(jsonMap.get("propertyType"));
@@ -144,8 +147,9 @@ public class PropertyResource {
     }
 
     @DELETE
-    @Path("/hardDelete")
-    public Response deletePropertyPermanently(@QueryParam("id") Long id) {
+    @Path("/{id}")
+    @Produces(MediaType.TEXT_PLAIN)
+    public Response deletePropertyPermanently(@PathParam("id") Long id) {
         log.debug("Deleting property with ID: {}", id);
         try {
             boolean deleted = propertyService.permenantlyDeleteByID(id);
@@ -162,10 +166,9 @@ public class PropertyResource {
     }
 
     @PUT
-    @Path("/softDelete")
-    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("/{id}")
     @Produces(MediaType.TEXT_PLAIN)
-    public Response softDeleteProperty(@QueryParam("id") Long id) {
+    public Response softDeleteProperty(@PathParam("id") Long id) {
         log.debug("Soft deleting property with ID: {}", id);
         try {
             boolean deleted = propertyService.safelyDeleteByID(id);

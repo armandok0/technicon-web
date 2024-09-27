@@ -35,6 +35,7 @@ public class RepairResource {
     private RepairService repairService;
 
     @POST
+    @Path("/create")
     public Response createRepair(Map<String, Object> jsonMap) {
         try {
             ObjectMapper mapper = new ObjectMapper();
@@ -57,10 +58,10 @@ public class RepairResource {
     }
 
     @PUT
-    @Path("/updateType")
+    @Path("/{id}/repairType")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.TEXT_PLAIN)
-    public Response updateRepairType(@QueryParam("id") Long id, Map<String, String> jsonMap) {
+    public Response updateRepairType(@PathParam("id") Long id, Map<String, String> jsonMap) {
         try {
             Optional<Repair> repairOpt = repairService.findRepairById(id);
 
@@ -83,10 +84,10 @@ public class RepairResource {
     }
 
     @PUT
-    @Path("/updateShortDescription")
+    @Path("/{id}/shortDescription")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.TEXT_PLAIN)
-    public Response updateShortDescription(@QueryParam("id") Long id, Map<String, String> jsonMap) {
+    public Response updateShortDescription(@PathParam("id") Long id, Map<String, String> jsonMap) {
         try {
             String shortDescription = jsonMap.get("shortDescription");
 
@@ -102,10 +103,10 @@ public class RepairResource {
     }
 
     @PUT
-    @Path("/updateDescription")
+    @Path("/{id}/description")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.TEXT_PLAIN)
-    public Response updateDescription(@QueryParam("id") Long id, Map<String, String> jsonMap) {
+    public Response updateDescription(@PathParam("id") Long id, Map<String, String> jsonMap) {
         try {
             String description = jsonMap.get("description");
 
@@ -121,10 +122,10 @@ public class RepairResource {
     }
 
     @PUT
-    @Path("/updateCostAndDates")
+    @Path("/{id}/costAndDates")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.TEXT_PLAIN)
-    public Response updateCostAndDates(@QueryParam("id") Long id, Map<String, Object> jsonMap) {
+    public Response updateCostAndDates(@PathParam("id") Long id, Map<String, Object> jsonMap) {
         try {
             BigDecimal proposedCost;
             try {
@@ -149,10 +150,10 @@ public class RepairResource {
     }
 
     @PUT
-    @Path("/updateAcceptance")
+    @Path("/{id}/acceptanceStatus")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.TEXT_PLAIN)
-    public Response updateAcceptance(@QueryParam("id") Long id, Map<String, Integer> jsonMap) {
+    public Response updateAcceptance(@PathParam("id") Long id, Map<String, Integer> jsonMap) {
         try {
             Integer response = jsonMap.get("response");
 
@@ -172,10 +173,9 @@ public class RepairResource {
     }
 
     @PUT
-    @Path("/updateStatus")
-    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("/{id}/statusInprogress")
     @Produces(MediaType.TEXT_PLAIN)
-    public Response updateStatus(@QueryParam("id") Long id) {
+    public Response updateStatus(@PathParam("id") Long id) {
         try {
             repairService.updateStatus(id);
             log.info("Status updated to INPROGRESS for Repair ID: {}", id);
@@ -188,10 +188,9 @@ public class RepairResource {
     }
 
     @PUT
-    @Path("/complete")
-    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("/{id}/statusComplete")
     @Produces(MediaType.TEXT_PLAIN)
-    public Response completeRepair(@QueryParam("id") Long id) {
+    public Response completeRepair(@PathParam("id") Long id) {
         try {
             repairService.updComplete(id);
             log.info("Repair ID {} marked as complete", id);
@@ -241,9 +240,9 @@ public class RepairResource {
     private OwnerService ownerService;
 
     @GET
-    @Path("/pending/owner")
+    @Path("/pending/owner/{vat}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getPendingRepairsByOwner(@QueryParam("vat") String vat) {
+    public Response getPendingRepairsByOwner(@PathParam("vat") String vat) {
         try {
             Optional<Owner> optionalOwner = ownerService.searchOwnerByVat(vat);
             if (optionalOwner.isEmpty()) {
@@ -302,9 +301,9 @@ public class RepairResource {
     }
 
     @GET
-    @Path("owner")
+    @Path("owner/{vat}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getRepairsByOwner(@QueryParam("vat") String vat) {
+    public Response getRepairsByOwner(@PathParam("vat") String vat) {
         try {
             Optional<Owner> optionalOwner = ownerService.searchOwnerByVat(vat);
             if (optionalOwner.isEmpty()) {
@@ -331,9 +330,9 @@ public class RepairResource {
     }
 
     @GET
-    @Path("/byId")
+    @Path("{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getRepairById(@QueryParam("id") Long id) {
+    public Response getRepairById(@PathParam("id") Long id) {
         try {
             Optional<Repair> optionalRepair = repairService.findRepairById(id);
 
@@ -350,15 +349,15 @@ public class RepairResource {
     }
 
     @PUT
-    @Path("/deleteSafely")
+    @Path("{id}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.TEXT_PLAIN)
-    public Response deleteRepairSafely(@QueryParam("id") Long id) {
+    public Response deleteRepairSafely(@PathParam("id") Long id) {
         try {
             boolean deleted = repairService.deleteSafely(id);
             if (deleted) {
                 return Response.ok()
-                        .entity("Repair with ID " + id + " has been successfully deleted.").build();
+                        .entity("Repair with ID " + id + " has been successfully marked as deleted.").build();
             } else {
                 return Response.status(Response.Status.NOT_FOUND)
                         .entity("Repair not found for ID: " + id).build();
@@ -371,9 +370,9 @@ public class RepairResource {
     }
 
     @DELETE
-    @Path("/deletePermantly")
+    @Path("{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response deleteRepairPermanently(@QueryParam("id") Long id) {
+    public Response deleteRepairPermanently(@PathParam("id") Long id) {
         try {
             boolean deleted = repairService.deletePermantlyById(id);
             if (deleted) {
@@ -393,9 +392,9 @@ public class RepairResource {
     private PropertyService propertyService;
 
     @GET
-    @Path("/property")
+    @Path("/property/{propertyId}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getRepairsByPropertyId(@QueryParam("propertyId") Long propertyId) {
+    public Response getRepairsByPropertyId(@PathParam("propertyId") Long propertyId) {
         try {
             Property property = propertyService.findByID(propertyId);
             if (property == null) {
