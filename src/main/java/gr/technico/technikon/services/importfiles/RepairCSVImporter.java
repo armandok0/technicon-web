@@ -1,31 +1,37 @@
-import gr.technico.technikon.jpa.JpaUtil;
+package gr.technico.technikon.services.importfiles;
+
 import gr.technico.technikon.model.Property;
 import gr.technico.technikon.model.Repair;
 import gr.technico.technikon.model.RepairStatus;
 import gr.technico.technikon.model.RepairType;
 import gr.technico.technikon.repositories.PropertyRepository;
 import gr.technico.technikon.repositories.RepairRepository;
-import gr.technico.technikon.services.importfiles.FilesImporter;
-import gr.technico.technikon.services.importfiles.PropertyCSVImporter;
+import jakarta.enterprise.context.RequestScoped;
+import jakarta.inject.Inject;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.math.BigDecimal;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.Optional;
 
+@RequestScoped
 public class RepairCSVImporter implements FilesImporter {
+
+    @Inject
+    private PropertyRepository propertyRepository;
+
+    @Inject
+    private RepairRepository repairRepository;
 
     @Override
     public void importFile(String filePath) throws IOException, OutOfMemoryError, FileNotFoundException {
 
-        PropertyRepository propertyRepository = new PropertyRepository(JpaUtil.getEntityManager());
-        RepairRepository repairRepository = new RepairRepository(JpaUtil.getEntityManager());
-
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
         try (BufferedReader br = new BufferedReader(new InputStreamReader(
                 PropertyCSVImporter.class.getClassLoader().getResourceAsStream(filePath)))) {
@@ -34,7 +40,6 @@ public class RepairCSVImporter implements FilesImporter {
                 String[] fields = line.split(",");
 
                 if (!(fields.length >= 10 && fields.length <= 12)) {
-                    // The line is malformed, skip it
                     continue;
                 }
 
@@ -42,7 +47,6 @@ public class RepairCSVImporter implements FilesImporter {
                 try {
                     propertyId = Long.parseLong(fields[0]);
                 } catch (NumberFormatException e) {
-                    // Invalid CSV format: propertyId must be Long, skip line
                     continue;
                 }
 
@@ -50,34 +54,30 @@ public class RepairCSVImporter implements FilesImporter {
                 try {
                     repairType = RepairType.valueOf(fields[1]);
                 } catch (IllegalArgumentException e) {
-                    // Invalid CSV format: invalid repair type, skip line
                     continue;
                 }
 
                 String shortDiscription = fields[2];
 
-                Date submitionDate;
+                LocalDateTime submitionDateLocal;
                 try {
-                    submitionDate = formatter.parse(fields[3]);
-                } catch (ParseException e) {
-                    // Invalid CSV format: invalid date format, skip line
+                    submitionDateLocal = LocalDateTime.parse(fields[3], formatter);
+                } catch (IllegalArgumentException e) {
                     continue;
                 }
 
                 String description = fields[4];
-                Date proposedStartDate;
+                LocalDateTime proposedStartDateLocal;
                 try {
-                    proposedStartDate = formatter.parse(fields[5]);
-                } catch (ParseException e) {
-                    // Invalid CSV format: invalid date format, skip line
+                    proposedStartDateLocal = LocalDateTime.parse(fields[5], formatter);
+                } catch (IllegalArgumentException e) {
                     continue;
                 }
 
-                Date proposedEndDate;
+                LocalDateTime proposedEndDateLocal;
                 try {
-                    proposedEndDate = formatter.parse(fields[6]);
-                } catch (ParseException e) {
-                    // Invalid CSV format: invalid date format, skip line
+                    proposedEndDateLocal = LocalDateTime.parse(fields[6], formatter);
+                } catch (IllegalArgumentException e) {
                     continue;
                 }
 
@@ -85,7 +85,6 @@ public class RepairCSVImporter implements FilesImporter {
                 try {
                     proposedCost = new BigDecimal(fields[7]);
                 } catch (IllegalArgumentException e) {
-                    // Invalid CSV format: invalid cost format, skip line
                     continue;
                 }
 
@@ -93,7 +92,6 @@ public class RepairCSVImporter implements FilesImporter {
                 try {
                     acceptanceStatus = Boolean.parseBoolean(fields[8]);
                 } catch (IllegalArgumentException e) {
-                    // Invalid CSV format: invalid status format, skip line
                     continue;
                 }
 
@@ -101,41 +99,50 @@ public class RepairCSVImporter implements FilesImporter {
                 try {
                     repairStatus = RepairStatus.valueOf(fields[9]);
                 } catch (IllegalArgumentException e) {
-                    // Invalid CSV format: invalid repair status, skip line
                     continue;
                 }
 
-                Date actualStartDate = null;
+                LocalDateTime actualStartDateLocal = null;
                 if (fields.length >= 11) {
                     try {
-                        actualStartDate = formatter.parse(fields[10]);
-                    } catch (ParseException e) {
-                        // Invalid CSV format: invalid date format, skip line
+                        actualStartDateLocal = LocalDateTime.parse(fields[10], formatter);
+                    } catch (IllegalArgumentException e) {
                         continue;
                     }
                 }
 
-                Date actualEndDate = null;
+                LocalDateTime actualEndDateLocal = null;
                 if (fields.length == 12) {
                     try {
-                        actualEndDate = formatter.parse(fields[11]);
-                    } catch (ParseException e) {
-                        // Invalid CSV format: invalid date format, skip line
+                        actualEndDateLocal = LocalDateTime.parse(fields[11], formatter);
+                    } catch (IllegalArgumentException e) {
+
                         continue;
                     }
+                }
+
+                if (repairRepository.findExistingRepair(propertyId, submitionDateLocal).isPresent()) {
+                    continue;
                 }
 
                 Optional<Property> propertyOptional = propertyRepository.findById(propertyId);
                 if (!propertyOptional.isPresent()) {
-                    // Property not found, skip line
                     continue;
                 }
+
                 Property property = propertyOptional.get();
 
                 Repair repair = new Repair();
                 repair.setProperty(property);
                 repair.setRepairType(repairType);
                 repair.setShortDescription(shortDiscription);
+
+                Date submitionDate = Date.from(submitionDateLocal.atZone(ZoneId.systemDefault()).toInstant());
+                Date proposedStartDate = Date.from(proposedStartDateLocal.atZone(ZoneId.systemDefault()).toInstant());
+                Date proposedEndDate = Date.from(proposedEndDateLocal.atZone(ZoneId.systemDefault()).toInstant());
+                Date actualStartDate = actualStartDateLocal != null ? Date.from(actualStartDateLocal.atZone(ZoneId.systemDefault()).toInstant()) : null;
+                Date actualEndDate = actualEndDateLocal != null ? Date.from(actualEndDateLocal.atZone(ZoneId.systemDefault()).toInstant()) : null;
+
                 repair.setSubmissionDate(submitionDate);
                 repair.setDescription(description);
                 repair.setProposedStartDate(proposedStartDate);
@@ -150,12 +157,11 @@ public class RepairCSVImporter implements FilesImporter {
             }
 
         } catch (OutOfMemoryError e) {
-            System.out.println("Java ran out of memory: " + e.getMessage());
+            System.out.println("Java run out of memory: " + e.getMessage());
         } catch (FileNotFoundException e) {
             System.out.println("Filepath not found: " + e.getMessage());
         } catch (IOException e) {
             System.out.println(e.getMessage());
         }
     }
-
 }

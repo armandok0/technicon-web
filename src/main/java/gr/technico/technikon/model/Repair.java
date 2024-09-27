@@ -9,9 +9,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.DecimalMin;
-import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.PastOrPresent;
 import jakarta.validation.constraints.Size;
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -39,7 +37,6 @@ public class Repair implements Serializable {
     @Column(name = "short_description", length = 100)
     private String shortDescription;
 
-    @PastOrPresent
     @NotNull
     @Column(name = "submission_date")
     private Date submissionDate;
@@ -47,11 +44,9 @@ public class Repair implements Serializable {
     @Size(max = 400)
     private String description;
 
-    @FutureOrPresent
     @Column(name = "proposed_start_date")
     private Date proposedStartDate;
 
-    @FutureOrPresent
     @Column(name = "proposed_end_date")
     private Date proposedEndDate;
 

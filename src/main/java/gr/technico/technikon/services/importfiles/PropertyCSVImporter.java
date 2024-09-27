@@ -1,29 +1,30 @@
 package gr.technico.technikon.services.importfiles;
 
 import gr.technico.technikon.exceptions.CustomException;
-import gr.technico.technikon.jpa.JpaUtil;
 import gr.technico.technikon.model.Owner;
 import gr.technico.technikon.model.Property;
 import gr.technico.technikon.model.PropertyType;
 import gr.technico.technikon.repositories.OwnerRepository;
-import gr.technico.technikon.repositories.PropertyRepository;
-import gr.technico.technikon.services.OwnerServiceImpl;
-import gr.technico.technikon.services.PropertyServiceImpl;
+import gr.technico.technikon.services.PropertyService;
+import jakarta.enterprise.context.RequestScoped;
+import jakarta.inject.Inject;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Optional;
 
+@RequestScoped
 public class PropertyCSVImporter implements FilesImporter {
+
+    @Inject
+    private OwnerRepository ownerRepository;
+
+    @Inject
+    private PropertyService propertyService;
 
     @Override
     public void importFile(String filePath) throws IOException, OutOfMemoryError, FileNotFoundException {
-
-        OwnerRepository ownerRepository = new OwnerRepository(JpaUtil.getEntityManager());
-        OwnerServiceImpl ownerServiceImpl = new OwnerServiceImpl(ownerRepository);
-        PropertyRepository propertyRepository = new PropertyRepository(JpaUtil.getEntityManager());
-        PropertyServiceImpl propertyServiceImpl = new PropertyServiceImpl(propertyRepository, ownerServiceImpl);
 
         try (BufferedReader br = new BufferedReader(new InputStreamReader(
                 PropertyCSVImporter.class.getClassLoader().getResourceAsStream(filePath)))) {
@@ -63,7 +64,7 @@ public class PropertyCSVImporter implements FilesImporter {
                     }
                     Owner owner = ownerOptional.get();
 
-                    Property savedProperty = propertyServiceImpl.createProperty(e9, propertyAddress, constructionYear, propertyType, owner.getVat());
+                    Property savedProperty = propertyService.createProperty(e9, propertyAddress, constructionYear, propertyType, owner.getVat());
 
                 } catch (CustomException e) {
                     System.out.println("Owner doesn't pass validations, skip this line" + e.getMessage());

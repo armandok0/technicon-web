@@ -45,7 +45,14 @@ public class OwnerRepository implements Repository<Owner, Long> {
     public Optional<Owner> save(Owner owner) {
         try {
             JpaUtil.beginTransaction();
-            Owner managedOwner = entityManager.merge(owner);
+
+            Owner managedOwner;
+            if (owner.getId() == null || entityManager.find(Owner.class, owner.getId()) == null) {
+                entityManager.persist(owner);
+                managedOwner = owner;
+            } else {
+                managedOwner = entityManager.merge(owner);
+            }
             JpaUtil.commitTransaction();
             return Optional.of(managedOwner);
         } catch (Exception e) {

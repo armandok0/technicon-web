@@ -79,6 +79,12 @@ public class OwnerServiceImpl implements OwnerService {
         }
     }
 
+    public void updateOwnerRole(String vat, Owner.Role newRole) throws CustomException {
+        Owner owner = getOwnerByVat(vat);
+        owner.setRole(newRole);
+        save(owner);
+    }
+
     /**
      * Searches Owner by its VAT
      *

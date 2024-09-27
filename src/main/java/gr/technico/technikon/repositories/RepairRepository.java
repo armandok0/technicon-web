@@ -42,15 +42,12 @@ public class RepairRepository implements Repository<Repair, Long> {
     @Override
     @Transactional
     public Optional<Repair> save(Repair repair) {
-        try {
-            JpaUtil.beginTransaction();
+        if (repair.getId() == null) {
+            entityManager.persist(repair);
+        } else {
             entityManager.merge(repair);
-            JpaUtil.commitTransaction();
-            return Optional.of(repair);
-        } catch (Exception e) {
-            JpaUtil.rollbackTransaction();
-            return Optional.empty();
         }
+        return Optional.of(repair);
     }
 
     /**
@@ -248,6 +245,21 @@ public class RepairRepository implements Repository<Repair, Long> {
 
             return query.getResultList();
         }
+    }
+
+    public Optional<Repair> findExistingRepair(Long propertyId, LocalDateTime submissionDate) {
+        try {
+            TypedQuery<Repair> query = entityManager.createQuery(
+                    "SELECT r FROM Repair r WHERE r.property.id = :propertyId AND r.submissionDate = :submissionDate", Repair.class);
+            query.setParameter("propertyId", propertyId);
+            query.setParameter("submissionDate", Timestamp.valueOf(submissionDate));
+            List<Repair> results = query.getResultList();
+            if (!results.isEmpty()) {
+                return Optional.of(results.get(0));
+            }
+        } catch (Exception e) {
+        }
+        return Optional.empty();
     }
 
     /**
