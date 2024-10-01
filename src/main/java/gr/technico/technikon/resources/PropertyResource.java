@@ -45,7 +45,7 @@ public class PropertyResource {
 
     @GET
     @Path("/{e9}")
-    @Produces(MediaType.TEXT_PLAIN)
+    @Produces(MediaType.APPLICATION_JSON)
     public Response searchPropertyByE9(@PathParam("e9") String e9) {
         log.debug("Searching for property with E9: {}", e9);
         try {
@@ -60,7 +60,7 @@ public class PropertyResource {
 
     @GET
     @Path("/vat/{vat}")
-    @Produces(MediaType.TEXT_PLAIN)
+    @Produces(MediaType.APPLICATION_JSON)
     public Response searchPropertyByVAT(@PathParam("vat") String vat) {
         log.debug("Searching for properties with VAT: {}", vat);
         try {
